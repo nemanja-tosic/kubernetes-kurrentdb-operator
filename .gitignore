@@ -1,0 +1,74 @@
+# ----------------------------
+# Go build/test artifacts
+# ----------------------------
+/bin/
+/build/
+/dist/
+/out/
+/tmp/
+/temp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage*.out
+cover.*
+/coverage/
+
+# If you don't vendor dependencies, keep this ignored.
+# Comment this out if you intentionally commit vendor/
+/vendor/
+
+# ----------------------------
+# Kubernetes/Helm artifacts
+# ----------------------------
+# Packaged charts and locks
+charts/**/*.tgz
+charts/**/Chart.lock
+Chart.lock
+
+# kubectl/kustomize temporary outputs (if any)
+*.yamltmp
+
+# ----------------------------
+# Editors/IDE
+# ----------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# Logs & local env
+# ----------------------------
+*.log
+.env
+.env.*
+!.env.example
+
+# ----------------------------
+# Containers
+# ----------------------------
+# Docker build cache directories (if used)
+.docker/
+
+# ----------------------------
+# Misc tools
+# ----------------------------
+# If using direnv
+.envrc
+
+# If any Node tooling sneaks in
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

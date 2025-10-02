@@ -1,0 +1,466 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.13.0
+  name: kurrentclusters.community.kurrent.io
+spec:
+  group: community.kurrent.io
+  names:
+    kind: KurrentCluster
+    listKind: KurrentClusterList
+    plural: kurrentclusters
+    shortNames:
+    - kc
+    singular: kurrentcluster
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.size
+      name: Size
+      type: integer
+    - jsonPath: .status.readyReplicas
+      name: Ready
+      type: integer
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: KurrentCluster is the Schema for the kurrentclusters API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: KurrentClusterSpec defines the desired state of KurrentCluster
+            properties:
+              affinity:
+                description: Affinity defines pod affinity rules
+                properties:
+                  nodeAffinity:
+                    description: Describes node affinity scheduling rules for the pod.
+                    type: object
+                    properties:
+                      preferredDuringSchedulingIgnoredDuringExecution:
+                        description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+                        items:
+                          description: An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+                          properties:
+                            preference:
+                              description: A node selector term, associated with the corresponding weight.
+                              properties:
+                                matchExpressions:
+                                  description: A list of node selector requirements by node's labels.
+                                  items:
+                                    description: A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                                matchFields:
+                                  description: A list of node selector requirements by node's fields.
+                                  items:
+                                    description: A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            weight:
+                              description: Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+                              format: int32
+                              type: integer
+                          required:
+                          - preference
+                          - weight
+                          type: object
+                        type: array
+                      requiredDuringSchedulingIgnoredDuringExecution:
+                        description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+                        properties:
+                          nodeSelectorTerms:
+                            description: Required. A list of node selector terms. The terms are ORed.
+                            items:
+                              description: A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+                              properties:
+                                matchExpressions:
+                                  description: A list of node selector requirements by node's labels.
+                                  items:
+                                    description: A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                                matchFields:
+                                  description: A list of node selector requirements by node's fields.
+                                  items:
+                                    description: A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+                                    properties:
+                                      key:
+                                        description: The label key that the selector applies to.
+                                        type: string
+                                      operator:
+                                        description: Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+                                        type: string
+                                      values:
+                                        description: An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+                                        items:
+                                          type: string
+                                        type: array
+                                    required:
+                                    - key
+                                    - operator
+                                    type: object
+                                  type: array
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            type: array
+                        required:
+                        - nodeSelectorTerms
+                        type: object
+                        x-kubernetes-map-type: atomic
+                  podAffinity:
+                    description: Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+                    type: object
+                  podAntiAffinity:
+                    description: Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+                    type: object
+                type: object
+              environment:
+                description: Environment defines additional environment variables for KurrentDB
+                items:
+                  description: EnvVar represents an environment variable present in a Container.
+                  properties:
+                    name:
+                      description: Name of the environment variable. Must be a C_IDENTIFIER.
+                      type: string
+                    value:
+                      description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                      type: string
+                    valueFrom:
+                      description: Source for the environment variable's value. Cannot be used if value is not empty.
+                      type: object
+                  required:
+                  - name
+                  type: object
+                type: array
+              image:
+                default: docker.kurrent.io/kurrent-latest/kurrentdb:latest
+                description: Image defines the KurrentDB container image to use
+                type: string
+              imagePullPolicy:
+                default: IfNotPresent
+                description: ImagePullPolicy defines the image pull policy
+                enum:
+                - Always
+                - Never
+                - IfNotPresent
+                type: string
+              network:
+                description: Network defines network configuration for the cluster
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Annotations defines annotations to add to services
+                    type: object
+                  externalPort:
+                    default: 2113
+                    description: ExternalPort defines the external port for client connections
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  gossipPort:
+                    default: 2113
+                    description: GossipPort defines the port for gossip communication
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  internalPort:
+                    default: 2113
+                    description: InternalPort defines the internal port for client connections
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  serviceType:
+                    default: ClusterIP
+                    description: ServiceType defines the type of service to create
+                    enum:
+                    - ClusterIP
+                    - NodePort
+                    - LoadBalancer
+                    type: string
+                type: object
+              nodeSelector:
+                additionalProperties:
+                  type: string
+                description: NodeSelector defines node selection constraints
+                type: object
+              resources:
+                description: Resources defines the resource requirements for KurrentDB containers
+                properties:
+                  claims:
+                    description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
+                    items:
+                      description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                      properties:
+                        name:
+                          description: Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - name
+                    x-kubernetes-list-type: map
+                  limits:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?[0-9]+))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                    type: object
+                  requests:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?[0-9]+))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                    type: object
+                type: object
+              serviceAccountName:
+                description: ServiceAccountName defines the service account to use
+                type: string
+              size:
+                default: 3
+                description: Size defines the number of KurrentDB nodes in the cluster
+                format: int32
+                maximum: 7
+                minimum: 1
+                type: integer
+              storage:
+                description: Storage defines the storage configuration for KurrentDB data
+                properties:
+                  accessModes:
+                    default:
+                    - ReadWriteOnce
+                    description: AccessModes defines the access modes for the persistent volume
+                    items:
+                      type: string
+                    type: array
+                  size:
+                    default: 10Gi
+                    description: Size defines the size of persistent volume for each node
+                    type: string
+                  storageClassName:
+                    description: StorageClassName defines the storage class to use
+                    type: string
+                type: object
+              tls:
+                description: TLS defines the TLS configuration for the cluster
+                properties:
+                  autoGenerate:
+                    default: true
+                    description: AutoGenerate defines whether to auto-generate certificates
+                    type: boolean
+                  caSecretName:
+                    description: CASecretName defines the name of the secret containing CA certificate Used when autoGenerate is false
+                    type: string
+                  certificatesSecretName:
+                    description: CertificatesSecretName defines the name of the secret containing certificates If not provided, certificates will be auto-generated
+                    type: string
+                  enabled:
+                    default: true
+                    description: Enabled defines whether TLS is enabled
+                    type: boolean
+                type: object
+              tolerations:
+                description: Tolerations defines pod tolerations
+                items:
+                  description: The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+                  properties:
+                    effect:
+                      description: Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+                      type: string
+                    key:
+                      description: Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+                      type: string
+                    operator:
+                      description: Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+                      type: string
+                    tolerationSeconds:
+                      description: TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+                      format: int64
+                      type: integer
+                    value:
+                      description: Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+                      type: string
+                  type: object
+                type: array
+            type: object
+          status:
+            description: KurrentClusterStatus defines the observed state of KurrentCluster
+            properties:
+              conditions:
+                description: Conditions represent the latest available observations of the cluster's state
+                items:
+                  description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              nodes:
+                description: Nodes represents the status of individual nodes
+                items:
+                  description: NodeStatus represents the status of a single node
+                  properties:
+                    message:
+                      description: Message provides additional information about the node status
+                      type: string
+                    name:
+                      description: Name is the name of the node
+                      type: string
+                    ready:
+                      description: Ready indicates if the node is ready
+                      type: boolean
+                    role:
+                      description: Role indicates the role of the node in the cluster
+                      type: string
+                  required:
+                  - name
+                  - ready
+                  type: object
+                type: array
+              observedGeneration:
+                description: ObservedGeneration represents the generation observed by the controller
+                format: int64
+                type: integer
+              phase:
+                description: Phase represents the current phase of the cluster
+                type: string
+              readyReplicas:
+                description: ReadyReplicas represents the number of ready replicas
+                format: int32
+                type: integer
+              replicas:
+                description: Replicas represents the total number of replicas
+                format: int32
+                type: integer
+              serviceEndpoints:
+                description: ServiceEndpoints represents the endpoints for accessing the cluster
+                properties:
+                  external:
+                    description: External represents external endpoints
+                    items:
+                      type: string
+                    type: array
+                  internal:
+                    description: Internal represents internal endpoints
+                    items:
+                      type: string
+                    type: array
+                type: object
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

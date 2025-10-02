@@ -1,0 +1,75 @@
+apiVersion: community.kurrent.io/v1
+kind: KurrentCluster
+metadata:
+  labels:
+    app.kubernetes.io/name: kurrentcluster
+    app.kubernetes.io/instance: kurrentcluster-sample
+    app.kubernetes.io/part-of: kurrentdb-community-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: kurrentdb-community-operator
+  name: kurrentcluster-sample
+spec:
+  # Default 3-node cluster with basic configuration
+  size: 3
+#   image: docker.kurrent.io/kurrent-latest/kurrentdb:latest
+  image: kurrentplatform/kurrentdb:25.0.1-experimental-arm64-8.0-jammy
+  imagePullPolicy: IfNotPresent
+  
+  # Storage configuration
+  storage:
+    size: "10Gi"
+    accessModes:
+      - ReadWriteOnce
+    # storageClassName: "fast-ssd" # Uncomment to specify storage class
+  
+  # Network configuration
+  network:
+    serviceType: ClusterIP
+    externalPort: 2113
+    internalPort: 2113
+    gossipPort: 2113
+  
+  # TLS configuration (auto-generated certificates)
+  tls:
+    enabled: true
+    autoGenerate: true
+  
+  # Resource requirements
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "1"
+  
+  # Additional environment variables (optional)
+  environment:
+    - name: KURRENTDB_LOG_LEVEL
+      value: "Information"
+    - name: KURRENTDB_ADVERTISE_HOST_TO_CLIENT_AS
+      value: "localhost"
+    - name: KURRENTDB_ADVERTISE_NODE_PORT_TO_CLIENT_AS
+      value: "30113"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kurrentcluster-nodeport
+  labels:
+    app.kubernetes.io/name: kurrentcluster
+    app.kubernetes.io/instance: kurrentcluster-sample
+    app.kubernetes.io/part-of: kurrentdb-community-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: kurrentdb-community-operator
+spec:
+  type: NodePort
+  ports:
+    - port: 2113
+      targetPort: 2113
+      nodePort: 30113
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: kurrentdb
+    app.kubernetes.io/instance: kurrentcluster-sample
+---
