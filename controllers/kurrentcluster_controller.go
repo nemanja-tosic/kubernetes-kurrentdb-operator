@@ -364,6 +364,12 @@ func (r *KurrentClusterReconciler) buildStatefulSet(cluster *kurrentv1.KurrentCl
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:    &cluster.Spec.Size,
 			ServiceName: fmt.Sprintf("%s-headless", cluster.Name),
+			UpdateStrategy: appsv1.StatefulSetUpdateStrategy{
+				Type: appsv1.RollingUpdateStatefulSetStrategyType,
+				RollingUpdate: &appsv1.RollingUpdateStatefulSetStrategy{
+					MaxUnavailable: &intstr.IntOrString{Type: intstr.Int, IntVal: 1},
+				},
+			},
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},
