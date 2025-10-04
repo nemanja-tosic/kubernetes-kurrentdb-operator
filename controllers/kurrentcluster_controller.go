@@ -353,6 +353,16 @@ func (r *KurrentClusterReconciler) buildStatefulSet(cluster *kurrentv1.KurrentCl
 		Tolerations:        cluster.Spec.Tolerations,
 		Affinity:           cluster.Spec.Affinity,
 		ServiceAccountName: cluster.Spec.ServiceAccountName,
+		TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
+			{
+				MaxSkew:           1,
+				TopologyKey:       "kubernetes.io/hostname",
+				WhenUnsatisfiable: corev1.ScheduleAnyway,
+				LabelSelector: &metav1.LabelSelector{
+					MatchLabels: labels,
+				},
+			},
+		},
 	}
 
 	statefulSet := &appsv1.StatefulSet{
